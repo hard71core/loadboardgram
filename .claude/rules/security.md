@@ -104,6 +104,25 @@ code.
   alpine`, resolves to Node 20.20.2, above Vite 8's `^20.19.0` floor)
   builds and serves the app correctly.
 
+- ~~No rate limiting on `/api/auth/*`; `POST /api/search` has no rate
+  limit and no cost cap on billed Anthropic calls~~ — **fixed.**
+  `backend/app/core/rate_limit.py` is a per-client-IP sliding-window
+  limiter wired in as a FastAPI dependency: `/api/auth/register` and
+  `/login` share one budget (`AUTH_RATE_LIMIT_PER_MINUTE`, default 10), so
+  attempts can't be spread across them; `POST /api/search` has its own
+  (`SEARCH_RATE_LIMIT_PER_MINUTE`, default 20). Over the limit is a 429
+  with `Retry-After`; rejected requests don't extend the block.
+  `/api/auth/refresh` is deliberately exempt — a 256-bit token has nothing
+  to brute-force, and a 429 there would make `AuthContext.tsx` treat the
+  session as dead and log a legitimate user out. On top of per-IP limits
+  (which many IPs together can still multiply), `core/llm.py` caps
+  Anthropic calls per UTC day (`NL_SEARCH_DAILY_LIMIT`, default 500,
+  counting attempts, not successes); once spent, search degrades to the
+  keyword filter instead of erroring. Not the full $-budget + circuit
+  breaker from tech doc §7.8, and in-process only — see the Known-gaps
+  item below. See `backend/tests/test_rate_limit.py` and
+  `backend/tests/test_llm.py`.
+
 Both P0s, the JWT gap, the backend half of the test-coverage gap, and the
 `esbuild` finding were tracked in `docs/technical-documentation.html`
 section 17, now marked closed there.
@@ -129,7 +148,7 @@ but doesn't stop the theft itself the way an httpOnly cookie would.
   needs an actual XSS elsewhere first, and there's no known one, but this
   is the kind of gap that's cheap to close later and expensive to discover
   in an incident.
-- Frontend test coverage is still a first slice — 12 files/94 tests (see
+- Frontend test coverage is still a first slice — 13 files/114 tests (see
   "Resolved" above and `.claude/rules/testing.md`). Every page/component
   originally named in this gap (`HomePage`, `LoadsPage`, `LoadDetailPage`,
   `DocsPage`, `RouteMap.tsx`, `App.tsx`'s shell/nav, `api.ts`) now has at
@@ -138,23 +157,24 @@ but doesn't stop the theft itself the way an httpOnly cookie would.
   `.claude/rules/testing.md` for exactly what's covered vs. not), and any
   new page added later starts from zero again until it gets its own test
   file.
-- `POST /api/search` (`core/llm.py`) has no rate limiting, no per-request
-  or per-period cost cap, and no auth requirement — once `NL_SEARCH_ENABLED`
-  is turned on, anyone can trigger billed Anthropic API calls at will (the
-  flag being off by default only prevents *accidental* spend, it's not a
-  real cost control). The "cost budget and circuit breaker" pattern
-  described in `docs/technical-documentation.html` section 7.8 is
-  aspirational, not implemented. Tracked as P2 — real exposure is small
-  while the account has no meaningful traffic, but this needs a fix before
-  any public/high-traffic deploy.
+- Rate limiting (`backend/app/core/rate_limit.py`) and the NL-search daily
+  cap (`core/llm.py`'s `NL_SEARCH_DAILY_LIMIT`) are in-process memory —
+  under N uvicorn workers/replicas the effective limit is N × the
+  configured one, and a restart resets both. The key is the TCP peer
+  address; `X-Forwarded-For` is deliberately ignored (client-controlled),
+  so behind a reverse proxy — or Docker Desktop's port-forwarding — every
+  caller can share one address and one budget. Target: an API gateway or
+  Redis behind the same interface, plus trusted-proxy config. Tracked as
+  P2 (tech doc §17 item 17) — fine for a single-process demo, needs
+  revisiting before any multi-worker or proxied deploy.
 - `frontend/src/geocode.ts` calls OpenStreetMap's Nominatim directly from
   the browser, no key, no backend proxy, no rate limiting beyond an
   in-memory per-session cache. Nominatim's usage policy caps free use at
   roughly 1 request/second and expects identifiable traffic; fine at demo
   scale, but real production traffic needs either a backend proxy with
   proper caching/throttling or a paid geocoder — Nominatim's operators can
-  and do block abusive IPs. Tracked as P2, same reasoning as the search
-  cost-cap item above.
+  and do block abusive IPs. Tracked as P2 — fine at demo scale, needs a
+  real fix before any public/high-traffic deploy.
 - `frontend/src/routing.ts` calls OSRM's public demo server
   (`router.project-osrm.org`) directly from the browser for driving
   directions — same shape of gap as `geocode.ts` above: no key, no

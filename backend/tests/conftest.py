@@ -9,6 +9,9 @@ from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
 
+from app.core.llm import reset_daily_usage
+from app.core.rate_limit import limiter
+
 
 @pytest.fixture(scope="session", autouse=True)
 def _apply_migrations():
@@ -20,6 +23,17 @@ def _apply_migrations():
     .github/workflows/ci.yml."""
     backend_dir = Path(__file__).resolve().parents[1]
     command.upgrade(Config(str(backend_dir / "alembic.ini")), "head")
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limits():
+    """Rate-limit and LLM-usage counters are in-memory, process-wide state —
+    and every TestClient request comes from the same fake client IP — so
+    without a reset, one test's requests would eat into the next test's
+    budget and the suite would start 429ing partway through."""
+    limiter.reset()
+    reset_daily_usage()
+    yield
 
 
 def register_user(client: TestClient, role: str) -> tuple[str, str]:

@@ -119,6 +119,22 @@ test above it, which this file's shape change also touched — comparing
 /api/loads?status=open` instead of the bare-array response that route
 used to return).
 
+`backend/tests/test_rate_limit.py` covers `core/rate_limit.py`: login
+429s past `AUTH_RATE_LIMIT_PER_MINUTE` with a `Retry-After` header,
+register shares that budget with login, `/refresh` and Bearer-protected
+`/me` stay outside it, budgets are per client IP (two `TestClient`s with
+different `client=` tuples) and per scope (spending the search budget
+doesn't block login), plus `RateLimiter` unit tests on an injected fake
+clock — the window sliding, rejected hits not extending the block, and
+`reset()`. `test_llm.py` also covers `NL_SEARCH_DAILY_LIMIT`: no client
+constructed once the cap is spent, the counter resetting on a new UTC day
+(`_today` patched), failed calls still counting, and a disabled flag not
+consuming budget. Limits are monkeypatched via env per test, and
+`conftest.py` has an autouse fixture that clears limiter and LLM-usage
+state before every test — all `TestClient` requests share one fake IP,
+so without it the suite would start 429ing partway through. 91 backend
+tests as of this change.
+
 `backend/tests/conftest.py` holds the migration fixture above plus the
 shared `register_user(client, role)` helper (extracted out of
 `test_load_ownership.py` once `test_search.py` needed the same setup) — use

@@ -170,6 +170,14 @@ core/
   config.py           CORS_ORIGINS parsing
   llm.py               the only place that calls an LLM provider — see
                         .claude/rules/security.md for its fail-closed contract
+  rate_limit.py         per-client-IP sliding-window limiter (in-memory,
+                         per-process), wired in as a route dependency —
+                         auth_rate_limit on /api/auth/register + /login
+                         (one shared budget; /refresh deliberately exempt,
+                         see its docstring), search_rate_limit on POST
+                         /api/search; limits read from env per request.
+                         llm.py additionally caps Anthropic calls per UTC
+                         day (NL_SEARCH_DAILY_LIMIT) — see security.md
   eta.py                the only backend place that calls Nominatim/OSRM —
                          geocodes + fetches real driving distance/duration,
                          widens it into a band; fail-closed like llm.py

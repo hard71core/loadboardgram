@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from ... import models, schemas
 from ...core.llm import parse_search_query
+from ...core.rate_limit import search_rate_limit
 from ..deps import get_db
 
 router = APIRouter(prefix="/api/search", tags=["search"])
@@ -30,7 +31,7 @@ def _keyword_filter(query, raw_query: str):
     return query
 
 
-@router.post("", response_model=list[schemas.LoadOut])
+@router.post("", response_model=list[schemas.LoadOut], dependencies=[Depends(search_rate_limit)])
 def search_loads(payload: schemas.SearchQuery, db: Session = Depends(get_db)):
     """Free-text load search. Parses the query into a SearchFilter via the
     LLM Gateway (core/llm.py) and applies whichever fields came back

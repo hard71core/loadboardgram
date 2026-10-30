@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ... import models, schemas
+from ...core.rate_limit import auth_rate_limit
 from ...core.security import (
     create_access_token,
     hash_password,
@@ -23,7 +24,12 @@ def _issue_token_pair(db: Session, user: models.User) -> schemas.Token:
     )
 
 
-@router.post("/register", response_model=schemas.Token, status_code=201)
+@router.post(
+    "/register",
+    response_model=schemas.Token,
+    status_code=201,
+    dependencies=[Depends(auth_rate_limit)],
+)
 def register(payload: schemas.UserCreate, db: Session = Depends(get_db)):
     existing = db.query(models.User).filter(models.User.email == payload.email).first()
     if existing:
@@ -40,7 +46,7 @@ def register(payload: schemas.UserCreate, db: Session = Depends(get_db)):
     return _issue_token_pair(db, user)
 
 
-@router.post("/login", response_model=schemas.Token)
+@router.post("/login", response_model=schemas.Token, dependencies=[Depends(auth_rate_limit)])
 def login(payload: schemas.LoginPayload, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == payload.email).first()
     if not user or not verify_password(payload.password, user.hashed_password):
@@ -55,7 +61,10 @@ def refresh(payload: schemas.RefreshPayload, db: Session = Depends(get_db)):
     old refresh token stops working the moment this succeeds. No Bearer
     header involved: possessing a valid, unrevoked refresh token is what
     proves the caller is allowed to do this, same trust model as the
-    password itself at /login."""
+    password itself at /login. Deliberately outside auth_rate_limit's
+    budget: a refresh token is 256 random bits, nothing to brute-force, and
+    a 429 here would read to the frontend as a dead session and log a
+    legitimate user out (see tests/test_rate_limit.py)."""
     result = rotate_refresh_token(db, payload.refresh_token)
     if not result:
         raise HTTPException(status_code=401, detail="Refresh token is invalid or expired")
