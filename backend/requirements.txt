@@ -1,6 +1,9 @@
 fastapi>=0.110,<1.0
 uvicorn[standard]>=0.29,<1.0
-sqlalchemy>=2.0,<3.0
+# <2.1: SQLAlchemy 2.1 switched the default driver for postgresql:// URLs
+# from psycopg2 to psycopg (v3), which isn't installed — every fresh install
+# then fails at import time. Lift this alongside a deliberate move to psycopg.
+sqlalchemy>=2.0,<2.1
 alembic>=1.13,<2.0
 psycopg2-binary>=2.9,<3.0
 pydantic>=2.6,<3.0
