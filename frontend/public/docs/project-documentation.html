@@ -86,6 +86,57 @@
   .phase b { color: #1f6feb; }
   code { background: #f1f3f6; padding: 1pt 4pt; border-radius: 3pt; font-size: 10pt; }
 
+  /* ---- competitor comparison (section 4.4) ---- */
+  @page wide { size: A4 landscape; margin: 10mm 10mm; }
+  .cmp-wrap { overflow-x: auto; margin: 12pt 0 4pt; }
+  table.cmp { font-size: 9pt; border: none; table-layout: fixed; min-width: 900px; }
+  table.cmp th, table.cmp td { border: none; border-bottom: 1pt solid #e6eaf0; padding: 7pt 6pt; vertical-align: middle; }
+  table.cmp thead th {
+    background: #10151c; color: #fff; font-size: 9pt; text-align: center; vertical-align: bottom;
+    border-bottom: none;
+  }
+  table.cmp thead th:first-child { border-top-left-radius: 6pt; text-align: left; }
+  table.cmp thead th:last-child { border-top-right-radius: 6pt; }
+  .cmp-sub { display: block; font-weight: 400; font-size: 7.5pt; opacity: .7; margin-top: 2pt; }
+  table.cmp .cmp-feat { width: 27%; text-align: left; }
+  table.cmp td.cmp-feat b { display: block; color: #10151c; font-size: 9.5pt; }
+  .cmp-why { display: block; color: #6b7482; font-size: 8pt; line-height: 1.35; margin-top: 2pt; }
+  table.cmp td { text-align: center; }
+  table.cmp tbody tr:nth-child(even) td { background: #fafbfc; }
+  table.cmp th.cmp-us { background: #1f6feb; }
+  table.cmp td.cmp-us, table.cmp tbody tr:nth-child(even) td.cmp-us {
+    background: #eaf1ff; border-left: 2pt solid #1f6feb; border-right: 2pt solid #1f6feb;
+  }
+  table.cmp tbody tr:last-child td.cmp-us { border-bottom: 2pt solid #1f6feb; }
+  .st {
+    display: inline-block; white-space: nowrap; border-radius: 10pt; padding: 1.5pt 7pt;
+    font-size: 8pt; font-weight: 700; letter-spacing: .1pt; line-height: 1.4;
+  }
+  .st-yes  { background: #e3f5e9; color: #1a7f37; }
+  .st-part { background: #fff3dc; color: #9a6700; }
+  .st-no   { background: #fde8e8; color: #c62828; }
+  .st-plan { background: #fff; color: #1f6feb; box-shadow: inset 0 0 0 1pt #1f6feb; }
+  .st-na   { background: #f1f3f6; color: #8892a0; font-weight: 600; }
+  .st-note { display: block; font-size: 7.5pt; color: #6b7482; margin-top: 2pt; line-height: 1.3; }
+  .cmp-legend { font-size: 8.5pt; color: #6b7482; text-align: left; }
+  .cmp-legend .st { margin: 0 2pt; }
+  .callout ul { margin: 4pt 0 0; }
+  .callout-warn { background: #fff8eb; border-left-color: #d29922; }
+  @media print {
+    .cmp-title, .cmp-wrap, .cmp-legend { page: wide; }
+    .cmp-title { margin-top: 0; }
+    .cmp-wrap { overflow: visible; margin-top: 6pt; }
+    table.cmp { min-width: 0; font-size: 8pt; }
+    table.cmp th, table.cmp td { padding: 3.5pt 5pt; }
+    table.cmp .cmp-feat { width: 30%; }
+    table.cmp td.cmp-feat b { font-size: 8.5pt; }
+    .cmp-why { font-size: 7pt; line-height: 1.25; margin-top: 1pt; }
+    .st { font-size: 7pt; padding: 1pt 6pt; }
+    .st-note { font-size: 6.5pt; margin-top: 1pt; }
+    table.cmp tr { page-break-inside: avoid; }
+    .st, table.cmp thead th, table.cmp td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
   /* ---- language switch ---- */
   .lang-switch {
     position: fixed; top: 14pt; right: 14pt; z-index: 100;
@@ -187,38 +238,165 @@ LoadBoardGram прибирає цю ланку: платформа сама зв
 </ol>
 
 <h2>4. Конкурентний ландшафт</h2>
-<h3>4.1 DAT Freight &amp; Analytics і Truckstop.com</h3>
-<p>Провідні майданчики галузі. Пропонують пошук вантажів/транспорту в реальному часі, аналітику
-ринкових ставок, базову перевірку надійності контрагента, інтеграції з TMS/ELD та факторинг.
-Монетизуються через рівневу підписку без AI-автоматизації підбору чи переговорів.</p>
+<p class="small">За дослідженням ринку США, жовтень 2026. Повні профілі компаній і посилання на джерела — <code>docs/research/</code>.</p>
+
+<h3>4.1 DAT і Truckstop — лідери ринку load board</h3>
+<p><b>DAT</b> (Roper Technologies) — №1 за обсягом: понад 700 тис. постингів вантажів на день. У 2024–2025 роках
+докупив трекінг, факторинг і технологію Convoy (автоматичний матчинг і біддинг). Із живого AI — ML-рекомендації
+вантажів і аналітика ринкових ставок. <b>Truckstop</b> — №2 за обсягом, але найдалі просунувся в AI: голосовий
+асистент для пошуку, скоринг ризику перевізника, автоматична звірка документів (rate con / POD / інвойс).
+Обидва монетизуються підпискою ($42–469/міс) і обидва брокероцентричні: більшість вантажів постять брокери.</p>
 
 <h3>4.2 LoadHunt ($LHUNT)</h3>
-<p>Проєкт, що працює на суміжному полі AI + логістика: браузерне розширення для оптимізації
-бронювання вантажів на DAT і Truckstop, AI-система управління транспортом (TMS) та AI-диспетчер,
-з подальшим розширенням до власного ELD. LoadHunt не є самостійною біржею вантажів — він працює
-«поверх» існуючих майданчиків і монетизується через утилітарний токен, а не класичну SaaS-модель.</p>
+<p>Не самостійна біржа, а браузерне розширення для диспетчерів, що працює «поверх» DAT і Truckstop (ранжування
+вантажів, калькулятор прибутку, автоматичні листи брокерам), плюс молодий TMS. Живого AI мінімум — більшість
+AI-функцій позначені як «скоро». Монетизується підпискою ($9–27 за диспетчера) і утилітарним токеном.
+Не конкурент-маркетплейс, але показує, що диспетчери готові платити за AI-шар над існуючими бордами.</p>
+
+<h3>4.3 Нова хвиля: прямі борди й AI-агенти</h3>
+<ul>
+  <li><b>Doft</b> — найближчий до нас за моделлю: шипери постять напряму, «без брокерської націнки»; AI-прогноз
+    ставки й голосовий AI-агент, що торгується з брокерами від імені перевізника. Масштаб — лише заяви самої компанії.</li>
+  <li><b>Amazon Relay</b> — найбільший у світі прямий борд без брокера, але для одного шипера — самого Amazon.</li>
+  <li><b>Uber Freight</b> і <b>Loadsmart</b> — цифрові брокери з десятками AI-агентів (30+ і 11 відповідно), орієнтовані на великих шиперів.</li>
+  <li><b>HappyRobot</b> (оцінка $1.22 млрд, серпень 2026) і <b>FleetWorks</b> — AI-агенти для переговорів і букінгу, які продаються брокерам.</li>
+  <li><b>Highway</b> — лідер з верифікації перевізників і боротьби з шахрайством; у 2025 запустив біржу лише для перевірених учасників.</li>
+</ul>
+
+<h3 class="cmp-title">4.4 Чим ми відрізняємось</h3>
+<div class="cmp-wrap"><table class="cmp"><thead><tr>
+<th class="cmp-feat">Чим відрізняємось</th>
+<th class="cmp-us">LoadBoardGram<span class="cmp-sub">Прямий маркетплейс</span></th>
+<th>DAT<span class="cmp-sub">Load board</span></th>
+<th>Truckstop<span class="cmp-sub">Load board</span></th>
+<th>Uber Freight<span class="cmp-sub">Цифровий брокер</span></th>
+<th>Loadsmart<span class="cmp-sub">Цифровий брокер</span></th>
+<th>Doft<span class="cmp-sub">Прямий борд</span></th>
+<th>Amazon Relay<span class="cmp-sub">Борд одного шипера</span></th>
+</tr></thead><tbody>
+<tr><td class="cmp-feat"><b>Прямий зв'язок шипер ↔ перевізник, без брокера</b><span class="cmp-why">Немає брокерської маржі: шипер платить менше, перевізник отримує більше</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Є</span><span class="st-note">в основі моделі</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">постять брокери</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">постять брокери</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">Uber сам брокер</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">брокерська маржа</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">опційно</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">лише Amazon</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Відкрито для будь-якого малого й середнього шипера</b><span class="cmp-why">Великі гравці фокусуються на enterprise — малі шипери досі дзвонять брокерам</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Є</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">за запитом</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">тарифи $109–239</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">enterprise</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">enterprise</span></td>
+<td><span class="st st-yes">✓ Є</span><span class="st-note">безкоштовно</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">лише Amazon</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Подвійний брокеридж структурно неможливий</b><span class="cmp-why">~69% шахрайства на ринку пов'язано з подвійним брокериджем — у нас немає посередника, який міг би перепродати вантаж</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Є</span><span class="st-note">за дизайном</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">19k фейкових вантажів (2025)</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">блокує постфактум</span></td>
+<td><span class="st st-no">✕ Немає</span></td>
+<td><span class="st st-no">✕ Немає</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">брокери теж постять</span></td>
+<td><span class="st st-yes">✓ Є</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>AI працює на шипера й перевізника, а не на брокера</b><span class="cmp-why">Майже всі AI-інвестиції ринку автоматизують роботу брокера, а не замінюють її</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Є</span><span class="st-note">усі 3 AI-фічі</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">для брокерів</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">частково для перевізників</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">AI самого брокера</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">агенти брокера</span></td>
+<td><span class="st st-yes">✓ Є</span><span class="st-note">для перевізника</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Пошук вантажів природною мовою</b><span class="cmp-why">«Reefer з Далласа до $900» замість шести фільтрів — нижчий поріг входу для малого перевізника</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Є</span><span class="st-note">LLM</span></td>
+<td><span class="st st-no">✕ Немає</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">голосом (AVA)</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Прогноз часу прибуття на картці вантажу</b><span class="cmp-why">Реалістичне вікно доставки ще до відправлення, без GPS-трекера</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Є</span><span class="st-note">маршрут + вікно</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">трекінг, не прогноз</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">трекінг</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">трекінг</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>AI-агент переговорів усередині платформи</b><span class="cmp-why">Ринок іде до «бот дзвонить боту» телефоном; структуровані ставки між агентами — швидше й з повним журналом</span></td>
+<td class="cmp-us"><span class="st st-plan">◷ Планується</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">автобіддинг Convoy</span></td>
+<td><span class="st st-no">✕ Немає</span></td>
+<td><span class="st st-no">✕ Немає</span><span class="st-note">фіксована ціна</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">агенти брокера</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">голосовий бот</span></td>
+<td><span class="st st-no">✕ Немає</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Оцінка надійності обох сторін — і перевізника, і шипера</b><span class="cmp-why">Перевізника перевіряють усі, платоспроможність шипера не оцінює ніхто — а без брокера це питання №1 для перевізника</span></td>
+<td class="cmp-us"><span class="st st-plan">◷ Планується</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">перевірка особи</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">лише перевізник</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">онбординг перевізника</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">онбординг</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">перевірки FMCSA</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">онбординг перевізника</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>AI-рекомендація ціни для шипера</b><span class="cmp-why">Відрізняє лише в зв'язці з прямою моделлю: без брокера шипер має сам знати ринкову ціну</span></td>
+<td class="cmp-us"><span class="st st-plan">◷ Планується</span></td>
+<td><span class="st st-part">◐ Частково</span><span class="st-note">аналітика для брокерів</span></td>
+<td><span class="st st-yes">✓ Є</span><span class="st-note">Rate Insights</span></td>
+<td><span class="st st-yes">✓ Є</span><span class="st-note">фіксовані ціни</span></td>
+<td><span class="st st-yes">✓ Є</span><span class="st-note">ML-котирування</span></td>
+<td><span class="st st-yes">✓ Є</span><span class="st-note">прогноз ставки</span></td>
+<td><span class="st st-na">– Н/д</span></td>
+</tr>
+</tbody></table></div>
+<p class="cmp-legend">Позначення: <span class="st st-yes">✓ Є</span> <span class="st st-part">◐ Частково</span> <span class="st st-no">✕ Немає</span> <span class="st st-plan">◷ Планується</span> <span class="st st-na">– Н/д</span></p>
 <div class="callout">
-  <b>Позиціонування:</b> існуючі гравці або консервативні й без AI (DAT, Truckstop), або AI-орієнтовані,
-  але залежні від чужих майданчиків (LoadHunt). Ніша повноцінної біржі вантажів із вбудованим AI
-  «з коробки» залишається відкритою.
+  <b>Чесний підсумок:</b> із 9 відмінностей <b>6 уже працюють</b> — 4 як властивості самої моделі, 2 як AI-фічі MVP
+  (пошук природною мовою, прогноз прибуття). <b>3 — у специфікації</b>: агент переговорів, оцінка надійності обох
+  сторін, рекомендація ціни. Найсильніші відмінності сьогодні — модельні; AI-перевага стане реальною, коли
+  будуть побудовані оцінка надійності й агент переговорів.
+</div>
+<div class="callout callout-warn">
+  <b>Де ми не відрізняємось (паритет або відставання):</b>
+  <ul>
+    <li><b>Обробка документів</b> — у Truckstop уже працює звірка документів; у нас лише специфікація.</li>
+    <li><b>Підбір вантажів</b> — є в DAT (ML), Truckstop, Uber, Doft; наш — детермінований алгоритм за правилами.</li>
+    <li><b>Ліквідність</b> — у DAT понад 700 тис. вантажів на день, у нас демо. Головний ризик будь-якого нового маркетплейсу.</li>
+    <li><b>Гарантія оплати й факторинг</b> — є в DAT, Truckstop, Uber, Doft, Amazon Relay; у нас поки немає навіть у плані.
+      Для моделі без брокера, який зазвичай гарантує оплату перевізнику, це критичний пробіл.</li>
+  </ul>
+</div>
+<div class="callout">
+  <b>Позиціонування:</b> великі гравці (DAT, Truckstop, Uber Freight, Loadsmart) мають AI, але він працює на брокера.
+  Прямі моделі існують лише як закритий борд одного шипера (Amazon Relay) або невеликий гравець (Doft). Ніша прямого
+  маркетплейсу для малих і середніх шиперів з AI на боці учасників угоди залишається відкритою.
 </div>
 
-<h3>4.3 Попередні спроби «Uber для вантажівок»</h3>
+<h3>4.5 Попередні спроби «Uber для вантажівок»</h3>
 <p>Ідея прибрати брокера з ланцюга вже перевірялася на ринку, і варто чесно врахувати цей досвід:</p>
 <ul>
   <li><b>Convoy</b> — стартап, що прямо називав себе «Uber для вантажівок», залучив понад $900 млн
     інвестицій від відомих фондів і приватних інвесторів, але закрився у жовтні 2023 року через
-    падіння ринку фрахту та неможливість залучити нове фінансування в цих умовах.</li>
-  <li><b>Uber Freight</b> — власний проєкт Uber у цій ніші (з 2017 року), у 2024-му виділений в
-    окрему компанію. Технічно з'єднує вантажовідправників і перевізників напряму, але фактично
-    продовжує працювати за логікою цифрового брокера: бере комісію за угоду і не усунула саму
-    функцію посередництва — лише її автоматизувала.</li>
+    падіння ринку фрахту та неможливість залучити нове фінансування в цих умовах. Його технологію купив
+    Flexport, а у 2025 році — DAT.</li>
+  <li><b>Uber Freight</b> — власний проєкт Uber у цій ніші (з 2017 року). Технічно з'єднує
+    вантажовідправників і перевізників напряму, але фактично працює за логікою цифрового брокера: бере
+    маржу з угоди і не усунув саму функцію посередництва — лише її автоматизував.</li>
+  <li><b>TruckSmarter</b> — безкоштовний борд з AI-диспетчером: 500 тис.+ перевізників і $16 млн інвестицій
+    у 2025, але у вересні 2026 його купили й закрили. Великої бази користувачів без транзакційної виручки не вистачило.</li>
 </ul>
 <p>Висновок для нашої стратегії: технічна ідея прямого з'єднання правильна й підтверджена ринком —
 провалилися компанії не через хибну гіпотезу, а через масштабування на дуже тонких маржах без
-достатнього AI-шару, що знижує вартість перевірки довіри й ризику. Наш фокус на AI для скорингу
-надійності, прогнозу ставок і автоматизації переговорів (розділ 5) — це саме те, що дає змогу
-утримати економіку моделі там, де попередники її втрачали.</p>
+достатнього AI-шару, що знижує вартість перевірки довіри й ризику, і без транзакційної монетизації з першого дня.
+Наш фокус на AI для скорингу надійності, прогнозу ставок і автоматизації переговорів (розділ 5) — це саме те,
+що дає змогу утримати економіку моделі там, де попередники її втрачали.</p>
 
 <h2>5. Ключові AI-можливості</h2>
 <table>
@@ -358,40 +536,167 @@ intermediation, but through the technology that makes the direct match possible.
 </ol>
 
 <h2>4. Competitive landscape</h2>
-<h3>4.1 DAT Freight &amp; Analytics and Truckstop.com</h3>
-<p>The industry's leading platforms. They offer real-time load/truck search, market rate analytics,
-basic counterparty trust checks, TMS/ELD integrations, and factoring. Monetized through tiered
-subscriptions, with no AI-driven matching or negotiation automation.</p>
+<p class="small">Based on US market research, October 2026. Full company profiles and source links are in <code>docs/research/</code>.</p>
+
+<h3>4.1 DAT and Truckstop — the load-board leaders</h3>
+<p><b>DAT</b> (Roper Technologies) is #1 by volume, with over 700k load posts a day. In 2024–2025 it bought
+tracking, factoring, and Convoy's technology (automated matching and bidding). Its live AI is ML load
+recommendations and market-rate analytics. <b>Truckstop</b> is #2 by volume but furthest ahead on AI: a voice
+assistant for search, carrier risk scoring, and automated document audit (rate con / POD / invoice). Both
+monetize through subscriptions ($42–469/mo) and both are broker-centric: brokers post most of the loads.</p>
 
 <h3>4.2 LoadHunt ($LHUNT)</h3>
-<p>A project working an adjacent AI + logistics angle: a browser extension for optimizing load
-booking on DAT and Truckstop, an AI transportation-management system (TMS), and an AI dispatcher,
-with a planned extension into its own ELD. LoadHunt isn't a standalone loadboard — it runs
-"on top of" existing platforms and monetizes through a utility token rather than a classic SaaS
-model.</p>
+<p>Not a standalone loadboard but a browser extension for dispatchers that runs "on top of" DAT and Truckstop
+(load ranking, a profit calculator, automated emails to brokers), plus a young TMS. Live AI is minimal — most
+AI features are marked "coming soon". Monetized through subscriptions ($9–27 per dispatcher) and a utility
+token. Not a marketplace competitor, but it shows dispatchers will pay for an AI layer on top of existing boards.</p>
+
+<h3>4.3 The new wave: direct boards and AI agents</h3>
+<ul>
+  <li><b>Doft</b> — closest to us in model: shippers post directly, "no broker markup"; an AI rate forecast and a
+    voice AI agent that negotiates with brokers on the carrier's behalf. Its scale figures are self-reported only.</li>
+  <li><b>Amazon Relay</b> — the largest direct, broker-free board there is, but for a single shipper: Amazon itself.</li>
+  <li><b>Uber Freight</b> and <b>Loadsmart</b> — digital brokers running dozens of AI agents (30+ and 11 respectively), focused on large shippers.</li>
+  <li><b>HappyRobot</b> ($1.22B valuation, August 2026) and <b>FleetWorks</b> — AI negotiation and booking agents sold to brokers.</li>
+  <li><b>Highway</b> — the carrier-verification and anti-fraud leader; in 2025 it launched an exchange open only to verified participants.</li>
+</ul>
+
+<h3 class="cmp-title">4.4 What sets us apart</h3>
+<div class="cmp-wrap"><table class="cmp"><thead><tr>
+<th class="cmp-feat">Differentiator</th>
+<th class="cmp-us">LoadBoardGram<span class="cmp-sub">Direct marketplace</span></th>
+<th>DAT<span class="cmp-sub">Load board</span></th>
+<th>Truckstop<span class="cmp-sub">Load board</span></th>
+<th>Uber Freight<span class="cmp-sub">Digital broker</span></th>
+<th>Loadsmart<span class="cmp-sub">Digital broker</span></th>
+<th>Doft<span class="cmp-sub">Direct board</span></th>
+<th>Amazon Relay<span class="cmp-sub">Single-shipper board</span></th>
+</tr></thead><tbody>
+<tr><td class="cmp-feat"><b>Direct shipper ↔ carrier, no broker</b><span class="cmp-why">No broker margin: the shipper pays less, the carrier earns more</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Yes</span><span class="st-note">core of the model</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">brokers post</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">brokers post</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">Uber is the broker</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">broker margin</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">optional</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">Amazon only</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Open to any small or mid-size shipper</b><span class="cmp-why">The big players focus on enterprise — small shippers still phone brokers</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Yes</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">by quote</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">$109–239 plans</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">enterprise</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">enterprise</span></td>
+<td><span class="st st-yes">✓ Yes</span><span class="st-note">free</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">Amazon only</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Double brokering structurally impossible</b><span class="cmp-why">~69% of market fraud is tied to double brokering — there's no middleman here to resell a load</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Yes</span><span class="st-note">by design</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">19k fake loads (2025)</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">blocks after the fact</span></td>
+<td><span class="st st-no">✕ No</span></td>
+<td><span class="st st-no">✕ No</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">brokers post too</span></td>
+<td><span class="st st-yes">✓ Yes</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>AI works for the shipper and carrier, not a broker</b><span class="cmp-why">Almost all AI money in the market automates the broker's job rather than replacing it</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Yes</span><span class="st-note">all 3 AI features</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">for brokers</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">partly for carriers</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">the broker's own AI</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">broker's agents</span></td>
+<td><span class="st st-yes">✓ Yes</span><span class="st-note">for carriers</span></td>
+<td><span class="st st-na">– N/a</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Natural-language load search</b><span class="cmp-why">“Reefer out of Dallas under $900” instead of six filters — a lower bar for small carriers</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Yes</span><span class="st-note">LLM</span></td>
+<td><span class="st st-no">✕ No</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">by voice (AVA)</span></td>
+<td><span class="st st-na">– N/a</span></td>
+<td><span class="st st-na">– N/a</span></td>
+<td><span class="st st-na">– N/a</span></td>
+<td><span class="st st-na">– N/a</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Arrival estimate on the load card</b><span class="cmp-why">A realistic delivery window before pickup, without a GPS tracker</span></td>
+<td class="cmp-us"><span class="st st-yes">✓ Yes</span><span class="st-note">route + window</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">tracking, not a forecast</span></td>
+<td><span class="st st-na">– N/a</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">tracking</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">tracking</span></td>
+<td><span class="st st-na">– N/a</span></td>
+<td><span class="st st-na">– N/a</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>In-platform AI negotiation agent</b><span class="cmp-why">The market is heading to bot-calls-bot over the phone; structured agent-to-agent bids are faster and fully logged</span></td>
+<td class="cmp-us"><span class="st st-plan">◷ Planned</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">Convoy auto-bidding</span></td>
+<td><span class="st st-no">✕ No</span></td>
+<td><span class="st st-no">✕ No</span><span class="st-note">fixed price</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">broker's agents</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">voice bot</span></td>
+<td><span class="st st-no">✕ No</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>Trust scoring for both sides — carrier and shipper</b><span class="cmp-why">Everyone vets the carrier, nobody scores the shipper's ability to pay — and with no broker that's the carrier's #1 question</span></td>
+<td class="cmp-us"><span class="st st-plan">◷ Planned</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">identity check</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">carrier only</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">carrier onboarding</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">onboarding</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">FMCSA checks</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">carrier onboarding</span></td>
+</tr>
+<tr><td class="cmp-feat"><b>AI price recommendation for the shipper</b><span class="cmp-why">Only differentiating combined with the direct model: with no broker, the shipper has to know the market price</span></td>
+<td class="cmp-us"><span class="st st-plan">◷ Planned</span></td>
+<td><span class="st st-part">◐ Partial</span><span class="st-note">analytics for brokers</span></td>
+<td><span class="st st-yes">✓ Yes</span><span class="st-note">Rate Insights</span></td>
+<td><span class="st st-yes">✓ Yes</span><span class="st-note">fixed prices</span></td>
+<td><span class="st st-yes">✓ Yes</span><span class="st-note">ML quotes</span></td>
+<td><span class="st st-yes">✓ Yes</span><span class="st-note">rate forecast</span></td>
+<td><span class="st st-na">– N/a</span></td>
+</tr>
+</tbody></table></div>
+<p class="cmp-legend">Legend: <span class="st st-yes">✓ Yes</span> <span class="st st-part">◐ Partial</span> <span class="st st-no">✕ No</span> <span class="st st-plan">◷ Planned</span> <span class="st st-na">– N/a</span></p>
 <div class="callout">
-  <b>Positioning:</b> existing players are either conservative and AI-free (DAT, Truckstop) or
-  AI-oriented but dependent on someone else's platform (LoadHunt). The niche of a full loadboard with
-  AI built in "out of the box" remains open.
+  <b>Honest summary:</b> of 9 differentiators, <b>6 already work</b> — 4 as properties of the model itself, 2 as MVP
+  AI features (natural-language search, arrival estimate). <b>3 are spec-only</b>: the negotiation agent, two-sided
+  trust scoring, and price recommendation. Today our strongest differentiators come from the model; the AI edge
+  becomes real once trust scoring and the negotiation agent are built.
+</div>
+<div class="callout callout-warn">
+  <b>Where we don't stand out (parity or behind):</b>
+  <ul>
+    <li><b>Document processing</b> — Truckstop already runs document audit; ours is spec-only.</li>
+    <li><b>Load matching</b> — DAT (ML), Truckstop, Uber, and Doft all have it; ours is a deterministic rule-based heuristic.</li>
+    <li><b>Liquidity</b> — DAT has 700k+ loads a day, we have a demo. The main risk for any new marketplace.</li>
+    <li><b>Payment guarantee and factoring</b> — DAT, Truckstop, Uber, Doft, and Amazon Relay all offer it; it isn't
+      even on our roadmap yet. With no broker, who would normally guarantee the carrier gets paid, that's a critical gap.</li>
+  </ul>
+</div>
+<div class="callout">
+  <b>Positioning:</b> the big players (DAT, Truckstop, Uber Freight, Loadsmart) have AI, but it works for the broker.
+  Direct models exist only as a closed single-shipper board (Amazon Relay) or a small player (Doft). The niche of a
+  direct marketplace for small and mid-size shippers, with AI working for the parties to the deal, remains open.
 </div>
 
-<h3>4.3 Prior attempts at "Uber for trucking"</h3>
+<h3>4.5 Prior attempts at "Uber for trucking"</h3>
 <p>The idea of removing the broker from the chain has already been tested in the market, and that
 track record is worth acknowledging honestly:</p>
 <ul>
   <li><b>Convoy</b> — a startup that explicitly branded itself "Uber for trucking," raised over $900M
     from well-known funds and private investors, but shut down in October 2023 amid a freight-market
-    downturn and its inability to raise further funding under those conditions.</li>
-  <li><b>Uber Freight</b> — Uber's own play in this space (since 2017), spun out as a separate company
-    in 2024. It technically connects shippers and carriers directly, but in practice still operates on
-    digital-broker logic: it takes a commission per deal and never actually eliminated the
-    intermediation function — only automated it.</li>
+    downturn and its inability to raise further funding under those conditions. Its technology went to
+    Flexport, and then to DAT in 2025.</li>
+  <li><b>Uber Freight</b> — Uber's own play in this space (since 2017). It technically connects shippers
+    and carriers directly, but in practice still operates on digital-broker logic: it takes a margin per
+    deal and never actually eliminated the intermediation function — only automated it.</li>
+  <li><b>TruckSmarter</b> — a free board with an AI dispatcher: 500k+ carriers and $16M raised in 2025, yet
+    acquired and shut down in September 2026. A big user base without transaction revenue wasn't enough.</li>
 </ul>
 <p>The takeaway for our strategy: the direct-connection idea is technically sound and market-tested —
 these companies failed not because the hypothesis was wrong, but because they scaled on very thin
-margins without a sufficient AI layer to bring down the cost of verifying trust and risk. Our focus on
-AI for trust scoring, rate forecasting, and negotiation automation (section 5) is exactly what lets us
-hold onto the unit economics where our predecessors lost them.</p>
+margins without a sufficient AI layer to bring down the cost of verifying trust and risk, and without
+transaction-based monetization from day one. Our focus on AI for trust scoring, rate forecasting, and
+negotiation automation (section 5) is exactly what lets us hold onto the unit economics where our
+predecessors lost them.</p>
 
 <h2>5. Key AI capabilities</h2>
 <table>

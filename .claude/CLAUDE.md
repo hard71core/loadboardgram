@@ -429,6 +429,12 @@ generated PDF twin:
   something that's already a tracked, deliberate decision, and update it if
   you close one of those items.
 
+`docs/research/` holds the raw competitor research (Markdown, English
+profiles + a Ukrainian comparison draft, October 2026) that backs
+`project-documentation.html` section 4's comparison table — source material
+with per-fact links, not a published doc, so it isn't copied into
+`frontend/public/docs/`. Refresh it before re-stating competitor facts.
+
 `frontend/public/docs/` holds a **copy** of all four files above (both
 `.html`, both `.pdf`) — not a symlink, real duplicated files, because this
 is a demo with no production static-file host and no build pipeline beyond
