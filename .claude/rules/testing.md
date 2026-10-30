@@ -309,8 +309,8 @@ a fixed `DOCS` array, so the tests assert on that array's shape rather
 than any behavior: both cards render their title, audience label, and
 body text (Project Overview/investor-facing, Technical Documentation/
 engineering spec), the heading and intro copy render, each card's
-"Open (UA/EN)" and "Download PDF" links point at that card's own
-`/docs/*.html`/`/docs/*.pdf` href (not the other card's), and — the one
+"Open (UA/EN)", "PDF (UA)" and "PDF (EN)" links point at that card's own
+`/docs/*.html`/`/docs/*.pdf`/`/docs/*.en.pdf` href (not the other card's), and — the one
 real security property here — every link carries `target="_blank"` paired
 with `rel="noopener noreferrer"`, not just `target="_blank"` alone.
 `DocsPage.tsx` now at 100% line/branch/function coverage (was untested).

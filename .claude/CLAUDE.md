@@ -46,11 +46,14 @@ apply everywhere no matter what file you're touching.
   architecture, the data model, endpoints, config/env vars, or tooling gets
   reflected in `docs/technical-documentation.html` as part of that change —
   not as a separate follow-up. Update the maturity pill (MVP → Phase 2 →
-  Phase 3 → R&D) when something ships, and regenerate
-  `docs/technical-documentation.pdf` to match (Chrome headless
-  `--print-to-pdf`, as used to produce the current one). If you close an item
+  Phase 3 → R&D) when something ships, and regenerate **both language PDFs**
+  of whichever doc changed — print CSS only shows the active language, so
+  each doc has a UA `*.pdf` and an EN `*.en.pdf`, printed from the same HTML
+  via its `?lang=` URL param (Chrome headless):
+  `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --no-pdf-header-footer --print-to-pdf=docs/X.pdf "file://$PWD/docs/X.html?lang=uk"`
+  and the same with `X.en.pdf` / `?lang=en`. If you close an item
   in the section 17 tech-debt table, mark it resolved there instead of
-  leaving it stale. **Then copy both `docs/*.html` and both `docs/*.pdf`
+  leaving it stale. **Then copy both `docs/*.html` and all four `docs/*.pdf`
   into `frontend/public/docs/`, overwriting what's there** — the in-app
   `/docs` page (`pages/DocsPage.tsx`) links to those copies, not the
   originals, so skipping this step leaves the live site showing stale docs
@@ -419,8 +422,9 @@ denormalization design, not a bug (see `update_me()`'s docstring,
 Still-open gaps (the refresh token's localStorage/XSS exposure, test
 coverage) are tracked in `.claude/rules/security.md`, not repeated here.
 
-**Docs** (`docs/`) hold two long-form specs, each with an HTML source and a
-generated PDF twin:
+**Docs** (`docs/`) hold two long-form specs, each with an HTML source and
+two generated PDFs — `*.pdf` (UA) and `*.en.pdf` (EN), see the ground rule
+above for how they're printed:
 - `project-documentation.html` — investor-facing overview, UA/EN language toggle.
 - `technical-documentation.html` — the actual engineering spec: target
   architecture, data model, and per-feature design for the 7 planned AI
@@ -435,8 +439,8 @@ profiles + a Ukrainian comparison draft, October 2026) that backs
 with per-fact links, not a published doc, so it isn't copied into
 `frontend/public/docs/`. Refresh it before re-stating competitor facts.
 
-`frontend/public/docs/` holds a **copy** of all four files above (both
-`.html`, both `.pdf`) — not a symlink, real duplicated files, because this
+`frontend/public/docs/` holds a **copy** of all six files above (both
+`.html`, all four `.pdf`) — not a symlink, real duplicated files, because this
 is a demo with no production static-file host and no build pipeline beyond
 Vite's dev server; `pages/DocsPage.tsx` links to these copies so visitors
 can read the docs in-app without leaving the site. Vite serves anything

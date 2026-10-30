@@ -26,19 +26,23 @@ describe("DocsPage", () => {
     ).toBeInTheDocument();
   });
 
-  it("points each card's links at its own html/pdf files", () => {
+  it("points each card's links at its own html and per-language pdf files", () => {
     render(<DocsPage />);
 
     const openLinks = screen.getAllByRole("link", { name: "Open (UA/EN)" });
-    const pdfLinks = screen.getAllByRole("link", { name: "Download PDF" });
+    const pdfUkLinks = screen.getAllByRole("link", { name: "PDF (UA)" });
+    const pdfEnLinks = screen.getAllByRole("link", { name: "PDF (EN)" });
     expect(openLinks).toHaveLength(2);
-    expect(pdfLinks).toHaveLength(2);
+    expect(pdfUkLinks).toHaveLength(2);
+    expect(pdfEnLinks).toHaveLength(2);
 
     // DOCS order: Project Overview first, Technical Documentation second.
     expect(openLinks[0]).toHaveAttribute("href", "/docs/project-documentation.html");
-    expect(pdfLinks[0]).toHaveAttribute("href", "/docs/project-documentation.pdf");
+    expect(pdfUkLinks[0]).toHaveAttribute("href", "/docs/project-documentation.pdf");
+    expect(pdfEnLinks[0]).toHaveAttribute("href", "/docs/project-documentation.en.pdf");
     expect(openLinks[1]).toHaveAttribute("href", "/docs/technical-documentation.html");
-    expect(pdfLinks[1]).toHaveAttribute("href", "/docs/technical-documentation.pdf");
+    expect(pdfUkLinks[1]).toHaveAttribute("href", "/docs/technical-documentation.pdf");
+    expect(pdfEnLinks[1]).toHaveAttribute("href", "/docs/technical-documentation.en.pdf");
   });
 
   it("opens every doc link in a new tab without leaking a window.opener reference", () => {
@@ -46,9 +50,10 @@ describe("DocsPage", () => {
 
     const allLinks = [
       ...screen.getAllByRole("link", { name: "Open (UA/EN)" }),
-      ...screen.getAllByRole("link", { name: "Download PDF" }),
+      ...screen.getAllByRole("link", { name: "PDF (UA)" }),
+      ...screen.getAllByRole("link", { name: "PDF (EN)" }),
     ];
-    expect(allLinks).toHaveLength(4);
+    expect(allLinks).toHaveLength(6);
     for (const link of allLinks) {
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAttribute("rel", "noopener noreferrer");

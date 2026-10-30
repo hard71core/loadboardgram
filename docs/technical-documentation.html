@@ -262,7 +262,7 @@
     .shell[data-lang="en"] { display: none; }
     body.lang-en .shell[data-lang="uk"] { display: none; }
     body.lang-en .shell[data-lang="en"] { display: block; }
-    .lang-switch { display: none; }
+    .lang-switch { display: none !important; } /* the base .lang-switch rule below would otherwise win on source order */
   }
 
   /* ---- language switch ---- */
@@ -1687,9 +1687,13 @@ CREATE TABLE documents (
     b.addEventListener('click', function () { apply(b.dataset.lang); });
   });
 
+  // ?lang=en|uk wins over the saved choice — that's how the per-language
+  // PDFs get printed (print CSS only shows the active language), and it
+  // makes a language-specific link shareable.
+  var param = new URLSearchParams(window.location.search).get('lang');
   var saved = null;
   try { saved = localStorage.getItem('loadboardgram-doc-lang'); } catch (e) {}
-  apply(saved === 'en' ? 'en' : 'uk');
+  apply(param === 'en' || param === 'uk' ? param : (saved === 'en' ? 'en' : 'uk'));
 })();
 </script>
 
